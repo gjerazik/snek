@@ -1,3 +1,5 @@
+# this is the game using the algorithm
+
 import pygame
 import random
 import time
