@@ -1,4 +1,4 @@
-# this is the path-finding algorithm used in the game
+# this is the path-finding algorithm (A* search) used in the game
 
 class Block:
     def __init__ (self, previous, position):
