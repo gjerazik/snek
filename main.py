@@ -1,3 +1,5 @@
+# this is the game where a user can play
+
 import pygame
 import random
 import time
