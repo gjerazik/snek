@@ -1,0 +1,94 @@
+class Block:
+    def __init__ (self, previous, position):
+        self.previous = previous
+        self.position = position
+        self.g = 0
+        self.h = 0
+        self.f = 0
+    
+    def __str__ (self):
+        return str(self.position)
+    
+    def __eq__(self, other):
+        return self.position == other.position
+        
+def shortest_path(board, snake, target):
+
+    # initialize snake and target
+    snake = Block(None, snake)
+    snake.f = 0
+    snake.g = 0
+    snake.h = 0
+    target = Block(None, target)
+    target.f = 0
+    target.g = 0
+    target.h = 0
+
+    closed = [] # explored blocks
+    opened = [] # unexplored blocks adjacent to the ones in closed list
+    opened.append(snake)
+
+    # loop until the target is found
+    while len(opened) > 0:
+
+        # the current block is the one with the least f
+        current_block = opened[0]
+        for new_block in opened:
+            if new_block.f < current_block.f:
+                current_block = new_block
+        
+        # block has been explored, so put it in closed list
+        opened.pop(opened.index(current_block))
+        closed.append(current_block)
+
+        # target is found -> make path by traversing thru previous blocks
+        if current_block == target:
+            path = []
+            last_block = current_block
+            while last_block is not None:
+                path.append(last_block.position)
+                last_block = last_block.previous
+            path.reverse()
+            return path
+        
+        # if target is not found -> get adjacent blocks and keep going
+        adjacent = []
+
+        up = (current_block.position[0], current_block.position[1] - 1)
+        if (up[0] < (len(board)-1)) and (up[0] >= 0) and (up[1] < (len(board[0])-1)) and (up[1] >= 0) and (board[up[0]][up[1]] == 0):
+            adjacent.append(Block(current_block, up))
+        
+        down = (current_block.position[0], current_block.position[1] + 1)
+        if (down[0] < (len(board)-1)) and (down[0] >= 0) and (down[1] < (len(board[0])-1)) and (down[1] >= 0) and (board[down[0]][down[1]] == 0):
+            adjacent.append(Block(current_block, down))
+
+        right = (current_block.position[0] - 1, current_block.position[1])
+        if (right[0] < (len(board)-1)) and (right[0] >= 0) and (right[1] < (len(board[0])-1)) and (right[1] >= 0) and (board[right[0]][right[1]] == 0):
+            adjacent.append(Block(current_block, right))
+
+        left = (current_block.position[0] + 1, current_block.position[1])
+        if (left[0] < (len(board)-1)) and (left[0] >= 0) and (left[1] < (len(board[0])-1)) and (left[1] >= 0) and (board[left[0]][left[1]] == 0):
+            adjacent.append(Block(current_block, left))
+        
+        # loop thru adjacent blocks
+        for block in adjacent:
+            
+            # check if the block is already in closed
+            for x in closed:
+                if block == x:
+                    break
+            
+            # g(n) is the distance from the current block to the snake's head
+            block.g = current_block.g + 1
+            # h(n) is the distance from the current block to the target
+            block.h = ((block.position[0]-target.position[0]) ** 2) + ((block.position[1]-target.position[1]) ** 2) 
+            # f(n) is the total cost
+            block.f = block.g + block.h
+
+            # check if the block is already in open
+            for x in opened:
+                if block == x:
+                    if block.g > x.g:
+                        break
+            
+            opened.append(block)
