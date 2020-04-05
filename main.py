@@ -7,24 +7,14 @@ import time
 pygame.init()
 
 # initialize the playing  board
-BOARD_SIZE = (400,400)
-screen = pygame.display.set_mode(BOARD_SIZE)
+BOARD_SIZE = (10,10)
+zoom = 40
+zoomed_screen = pygame.display.set_mode((BOARD_SIZE[0]*zoom, BOARD_SIZE[1]*zoom))
+screen = pygame.Surface((BOARD_SIZE[0], BOARD_SIZE[1]))
 
 # set the size of the snake and its speed
-snake_size = 10
+snake_size = 1
 speed = 15
-
-# record score
-def display_text(points, score, curr_frame, timeout, length):
-    text_points = pygame.font.SysFont('arial', 20).render("Points: " + str(points), True, (255,255,255))
-    text_score = pygame.font.SysFont('arial', 20).render("Score: " + str(score), True, (255,255,255))
-    text_curr_frame = pygame.font.SysFont('arial', 20).render("Curr Frame: " + str(curr_frame) + " vs Time out: " + str(timeout), True, (255,255,255))
-    text_length = pygame.font.SysFont('arial', 20).render("Length: " + str(length), True, (255,255,255))
-    screen.blit(text_curr_frame, [10,10])
-    screen.blit(text_points, [10,30])
-    screen.blit(text_score, [10,50])
-    screen.blit(text_length, [10,70])
-    
 
 # make snake
 def naigini(snake_size, body):
@@ -47,7 +37,8 @@ def game():
     score = 0
     points = 0
     curr_frame = 0
-    timeout = 100
+    CYCLE_ALLOWANCE = 1.5
+    TIMEOUT = (4 * BOARD_SIZE[0] - 4) * CYCLE_ALLOWANCE
 
     while (play_on):
 
@@ -118,6 +109,7 @@ def game():
 
         naigini(snake_size, body)
         display_text(points, score, curr_frame, timeout, length)
+        zoomed_screen.blit(pygame.transform.scale(screen, zoomed_screen.get_rect().size), (0, 0))
         pygame.display.update()
 
         # if snake eats a target
