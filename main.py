@@ -84,7 +84,7 @@ def game():
 
         score += 1
         curr_frame += 1
-        if curr_frame == timeout:
+        if curr_frame == TIMEOUT:
             play_on = False
 
         screen.fill((0,0,0))
@@ -108,7 +108,6 @@ def game():
                 play_on = False
 
         naigini(snake_size, body)
-        display_text(points, score, curr_frame, timeout, length)
         zoomed_screen.blit(pygame.transform.scale(screen, zoomed_screen.get_rect().size), (0, 0))
         pygame.display.update()
 
